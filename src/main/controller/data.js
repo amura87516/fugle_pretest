@@ -1,5 +1,6 @@
 import express from "express";
 import { fetchHackerNews, checHackerNewsData } from "../service/hackerNews.js";
+import { rateLimiterMiddleware } from "../middleware/rateLimitor.js";
 
 /*
 	Controllers.
@@ -8,7 +9,7 @@ import { fetchHackerNews, checHackerNewsData } from "../service/hackerNews.js";
 
 var router = express.Router();
 
-router.get("/", function (req, res) {
+router.get("/", rateLimiterMiddleware, function (req, res) {
 	const { user: userId } = req.query;
 	// check heroId is numeric and positive
 	if (isNaN(+userId) || +userId <= 0 || +userId > 1000) {
