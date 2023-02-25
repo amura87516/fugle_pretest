@@ -1,18 +1,7 @@
-import redis from "redis";
 import dotenv from "dotenv";
+import { redisClient } from "../service/redis.js";
 
 // Redis client setup
-const redisClient = redis.createClient({
-	url: "redis://cache:6379",
-});
-
-redisClient.on("connect", () => {
-	console.log("Connected to Redis server");
-});
-
-redisClient.on("error", (err) => {
-	console.error("Error connecting to Redis server:", err);
-});
 
 await redisClient.connect();
 
