@@ -1,0 +1,53 @@
+{
+	"name": "fugle_pretest",
+	"version": "1.0.0",
+	"main": "src/main/server.js",
+	"type": "module",
+	"scripts": {
+		"dev": "NODE_ENV=developmnt nodemon src/main/server.js",
+		"prod": "NODE_ENV=production node src/main/server.js",
+		"test": "NODE_ENV=testing jest",
+		"translate": "babel src/main -d build && babel node_modules/axios -d node_modules/axios",
+		"build": "npm run translate && pkg build/server.js  -t node18-linux-x64  -c package.json -o build/server",
+		"githook-init": "husky install"
+	},
+	"author": "Steven",
+	"license": "ISC",
+	"dependencies": {
+		"@babel/cli": "^7.20.7",
+		"@babel/core": "^7.20.12",
+		"@babel/preset-env": "^7.20.2",
+		"axios": "^1.2.3",
+		"babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+		"dotenv": "^16.0.3",
+		"express": "^4.18.2",
+		"pkg": "^5.8.0"
+	},
+	"devDependencies": {
+		"babel-jest": "^29.3.1",
+		"git-cz": "^4.9.0",
+		"husky": "^8.0.0",
+		"husky-init": "^8.0.0",
+		"jest": "^29.4.1",
+		"nodemon": "^2.0.20",
+		"prettier": "^2.8.3",
+		"prettier-eslint": "^15.0.1",
+		"supertest": "^6.3.3",
+		"swaggerhub-cli": "^0.6.5"
+	},
+	"jest": {
+		"transform": {
+			"^.+\\.jsx?$": "babel-jest"
+		},
+		"maxWorkers": 1,
+		"testEnvironment": "node"
+	},
+	"pkg": {
+		"options": [
+			"experimental-modules"
+		],
+		"assets": [
+			"node_modules/**/*"
+		]
+	}
+}

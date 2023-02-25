@@ -1,0 +1,38 @@
+{
+	"name": "${localWorkspaceFolderBasename}",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+	"features": {
+		"ghcr.io/devcontainers/features/git:1": {}
+	},
+	"postCreateCommand": "chmod +x ./.devcontainer/setup.sh && ./.devcontainer/setup.sh ${localWorkspaceFolderBasename}",
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"editor.formatOnSave": true,
+				"editor.tabSize": 4,
+				"editor.indentSize": "tabSize",
+				"dev.containers.copyGitConfig": true,
+				"files.eol": "\n",
+				"eslint.alwaysShowStatus": true,
+				"eslint.format.enable": true,
+				"eslint.lintTask.enable": true,
+				"thunder-client.httpLibrary": "axios",
+				"thunder-client.customLocation": "/workspaces/${localWorkspaceFolderBasename}/thunder",
+				"editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+				"jest.jestCommandLine": "yarn test"
+			},
+			"extensions": [
+				"rangav.vscode-thunder-client",
+				"waderyan.nodejs-extension-pack",
+				"rvest.vs-code-prettier-eslint",
+				"Arjun.swagger-viewer",
+				"hediet.vscode-drawio",
+				"Orta.vscode-jest",
+				"cweijan.vscode-redis-client"
+			]
+		}
+	},
+	"remoteUser": "root"
+}
