@@ -20,7 +20,9 @@ router.get("/", rateLimiterMiddleware, function (req, res) {
 	fetchHackerNews()
 		.then((result) => {
 			if (!checHackerNewsData(result.data)) {
-				res.status(502);
+				res.status(500).send(
+					"Got unexpected data from upstream server"
+				);
 			}
 			res.json({
 				result: result.data,

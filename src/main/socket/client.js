@@ -39,11 +39,15 @@ export const broadcast = (event) => {
 
 const unsubscribe = (ws, socket, currencyPairs) => {
 	currencyPairs.forEach((currencyPair) => {
-		currencyPairByUser.get(socket).delete(currencyPair);
-		userByCurrencyPair.get(currencyPair).delete(socket);
-		if (userByCurrencyPair.get(currencyPair).size == 0) {
-			userByCurrencyPair.delete(currencyPair);
-			unsubscribeBitstamp(ws, currencyPair);
+		if (currencyPairByUser.has(socket)) {
+			currencyPairByUser.get(socket).delete(currencyPair);
+		}
+		if (userByCurrencyPair.has(currencyPair)) {
+			userByCurrencyPair.get(currencyPair).delete(socket);
+			if (userByCurrencyPair.get(currencyPair).size == 0) {
+				userByCurrencyPair.delete(currencyPair);
+				unsubscribeBitstamp(ws, currencyPair);
+			}
 		}
 	});
 };
@@ -60,7 +64,7 @@ const unsubscribeAll = (ws, socket) => {
 };
 
 export const buildClientSocket = (io, ws) => {
-	io.on("connection", (socket) => {
+	io.of("/streaming").on("connection", (socket) => {
 		socket.on("subscribe", (currencyPairs) => {
 			subscribe(ws, socket, JSON.parse(currencyPairs));
 		});
