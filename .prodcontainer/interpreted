@@ -1,0 +1,11 @@
+FROM node:18
+
+WORKDIR /fugle
+
+COPY . .
+
+RUN npm install --only=prod
+
+EXPOSE 3000
+
+CMD NODE_ENV=production yarn run prod

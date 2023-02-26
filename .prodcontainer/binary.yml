@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+    ninary_app:
+        build:
+            context: ..
+            dockerfile: ./.prodcontainer/binary
+        env_file:
+            - ../.env
+        depends_on:
+            - cache
+        ports:
+            - 3000:3000
+
+        restart: unless-stopped
+
+    cache:
+        image: redis:7.0
+        restart: unless-stopped

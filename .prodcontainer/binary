@@ -1,0 +1,18 @@
+FROM node:18
+
+# copy project  and install all dependency
+WORKDIR /fugle
+COPY . .
+RUN npm install --only=prod
+
+# compile project and move to compiling result out of this folder
+RUN yarn run build
+RUN mv build/server ../server
+
+# authorize compiling result and remove source code
+WORKDIR /
+RUN chmod +x server
+RUN rm -rf fugle
+
+# run binary code
+ENTRYPOINT NODE_ENV=binary ./server
