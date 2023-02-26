@@ -1,2 +1,11 @@
+.devcontainer
 node_modules
+build
+thunder
+swagger
+.prettierrc
+.gitignore
 package-lock.json
+readme.md
+.husky
+diagram

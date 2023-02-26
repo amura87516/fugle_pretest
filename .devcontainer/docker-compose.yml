@@ -7,6 +7,8 @@ services:
       - ../..:/workspaces:cached
     command: sleep infinity
     network_mode: service:cache
+    depends_on:
+      - cache
 
   cache:
     image: redis:7.0
