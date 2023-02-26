@@ -7,6 +7,7 @@ import {
 } from "../service/redis.js";
 
 dotenv.config();
+
 const USER_RATE_LIMIT_TIMES = process.env.USER_RATE_LIMIT_TIMES;
 const IP_RATE_LIMIT_TIMES = process.env.IP_RATE_LIMIT_TIMES;
 const RATE_LIMIT_PRECISION_SEC = process.env.RATE_LIMIT_PRECISION_SEC;
@@ -17,10 +18,10 @@ export const rateLimiterMiddleware = async (req, res, next) => {
 	const userId = req.query.user;
 
 	// Check IP rate limit
-	const ipCount = await getIpCnt(ipAddress);
+	const ipCount = (await getIpCnt(ipAddress)) ?? 0;
 	let userCount = null;
 	if (userId) {
-		userCount = await getUserCnt(userId);
+		userCount = (await getUserCnt(userId)) ?? 0;
 	}
 
 	if (ipCount && +ipCount >= IP_RATE_LIMIT_TIMES) {

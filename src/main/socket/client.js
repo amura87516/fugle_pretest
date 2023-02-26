@@ -44,7 +44,12 @@ export const broadcast = async (event) => {
 	} else {
 		const latestPrice = data.data.price;
 
-		await addNewPrice(channel, latestPrice, process.env.OHCL_PRECISION_SEC);
+		await addNewPrice(
+			channel,
+			latestPrice,
+			data.data.timestamp,
+			process.env.OHCL_PRECISION_SEC
+		);
 
 		const prices = await getPrices(channel);
 

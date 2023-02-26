@@ -22,10 +22,12 @@
 		"babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
 		"dotenv": "^16.0.3",
 		"express": "^4.18.2",
-		"nc": "^1.0.3",
-		"pkg": "^5.8.0",
 		"ioredis": "5.3.1",
+		"nc": "^1.0.3",
+		"nock": "^13.3.0",
+		"pkg": "^5.8.0",
 		"socket.io": "^4.6.1",
+		"url": "^0.11.0",
 		"ws": "^8.12.1"
 	},
 	"devDependencies": {

@@ -46,8 +46,13 @@ export const incIpCnt = async (ip, ipCount, RATE_LIMIT_PRECISION_SEC) => {
 	await redisClient.expire(ipKey, RATE_LIMIT_PRECISION_SEC);
 };
 
-export const addNewPrice = async (channel, price, OHCL_PRECISION_SEC) => {
-	const minutes = new Date().getMinutes();
+export const addNewPrice = async (
+	channel,
+	price,
+	timestamp,
+	OHCL_PRECISION_SEC
+) => {
+	const minutes = Math.floor(timestamp / 60) % 10;
 	const key = `price_${channel}_${minutes}`;
 	await redisClient.rpush(key, price);
 	await redisClient.expire(key, OHCL_PRECISION_SEC);
@@ -57,4 +62,20 @@ export const getPrices = async (channel) => {
 	const minutes = new Date().getMinutes();
 	const key = `price_${channel}_${minutes}`;
 	return (await redisClient.lrange(key, 0, -1)).map((price) => +price);
+};
+
+export const resetRedis = async () => {
+	await redisClient.flushall();
+};
+
+export const setUserCnt = async (userId, usercnt) => {
+	const minutes = new Date().getMinutes();
+	const userKey = `user_${userId}_${minutes}`;
+	await redisClient.set(userKey, usercnt);
+};
+
+export const setIpCnt = async (ip, ipCnt) => {
+	const minutes = new Date().getMinutes();
+	const ipKey = `ip_${ip}_${minutes}`;
+	await redisClient.set(ipKey, ipCnt);
 };
