@@ -73,3 +73,16 @@
 -   pre-commit will run all testing cases automatically before git commit.
 -   Developers can run testing with jest extention on the vscode extention bar
 -   If jest extention didn't show in extention bar, please reload vscode window manually.
+
+# Testing
+
+-   Thunder Client (a tool similar to postman but can be intergrated with vscode) for testing manually
+-   Jest for testing programmatically
+-   Build different dummy servers for different testing scenarios
+-   Set NODE_ENV as "testing" while running jest to switch upstream server URL
+-   Test hacker news proxy, rate limiter and OHCL socket with jest.
+
+# Git Hook
+
+-   [husky](https://www.npmjs.com/package/husky), a git hook setup tool
+-   pre-commit: it will automatically run all testing before git commit

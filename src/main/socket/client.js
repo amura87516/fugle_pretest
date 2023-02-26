@@ -30,28 +30,35 @@ const subscribe = (ws, socket, currencyPairs) => {
 	addCurrencyPairByUser(socket, currencyPairs);
 };
 
+export const setExistSocketAndChannel = (socket, currencyPair) => {
+	userByCurrencyPair.set(currencyPair, new Set([socket]));
+	currencyPairByUser.set(socket, new Set([currencyPair]));
+};
+
 export const broadcast = async (event) => {
 	const data = JSON.parse(event.data);
 	const channel = data.channel.split("_")[2];
 
-	if (data.event.includes("succeeded")) {
+	if (data.event == "bts:subscription_succeeded") {
 		userByCurrencyPair.get(channel)?.forEach((socket) => {
 			socket.emit(
 				channel,
-				JSON.stringify(`subscribe ${channel} succeeded`)
+				JSON.stringify(`subscribe ${channel} successed`)
 			);
 		});
 	} else {
 		const latestPrice = data.data.price;
 
+		const timestamp = data.data.timestamp || Math.floor(+new Date() / 1000);
+
 		await addNewPrice(
 			channel,
 			latestPrice,
-			data.data.timestamp,
+			timestamp,
 			process.env.OHCL_PRECISION_SEC
 		);
 
-		const prices = await getPrices(channel);
+		const prices = await getPrices(channel, timestamp);
 
 		const firstPrice = prices[0];
 		const highestPrice = Math.max(...prices);

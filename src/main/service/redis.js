@@ -52,14 +52,14 @@ export const addNewPrice = async (
 	timestamp,
 	OHCL_PRECISION_SEC
 ) => {
-	const minutes = Math.floor(timestamp / 60) % 10;
+	const minutes = Math.floor((timestamp / 60) % 60);
 	const key = `price_${channel}_${minutes}`;
 	await redisClient.rpush(key, price);
 	await redisClient.expire(key, OHCL_PRECISION_SEC);
 };
 
-export const getPrices = async (channel) => {
-	const minutes = new Date().getMinutes();
+export const getPrices = async (channel, timestamp) => {
+	const minutes = Math.floor((timestamp / 60) % 60);
 	const key = `price_${channel}_${minutes}`;
 	return (await redisClient.lrange(key, 0, -1)).map((price) => +price);
 };

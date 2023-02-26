@@ -39,6 +39,7 @@
 		"nodemon": "^2.0.20",
 		"prettier": "^2.8.3",
 		"prettier-eslint": "^15.0.1",
+		"socket.io-client": "^4.6.1",
 		"supertest": "^6.3.3",
 		"swaggerhub-cli": "^0.6.5"
 	},
