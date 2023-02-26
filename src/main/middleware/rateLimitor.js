@@ -1,9 +1,10 @@
 import dotenv from "dotenv";
-import { redisClient } from "../service/redis.js";
-
-// Redis client setup
-
-await redisClient.connect();
+import {
+	getUserCnt,
+	getIpCnt,
+	incUserCnt,
+	incIpCnt,
+} from "../service/redis.js";
 
 dotenv.config();
 const USER_RATE_LIMIT_TIMES = process.env.USER_RATE_LIMIT_TIMES;
@@ -15,38 +16,33 @@ export const rateLimiterMiddleware = async (req, res, next) => {
 	const ipAddress = req.ip;
 	const userId = req.query.user;
 
-	const minutes = new Date().getMinutes();
-
-	const ipKey = `ip_${ipAddress}_${minutes}`;
-	const userKey = `user_${userId}_${minutes}`;
-
 	// Check IP rate limit
-	const ipCount = await redisClient.get(ipKey);
-	if (ipCount && +ipCount > IP_RATE_LIMIT_TIMES) {
-		res.status(429).json({ ip: ipAddress, id: userId });
+	const ipCount = await getIpCnt(ipAddress);
+	let userCount = null;
+	if (userId) {
+		userCount = await getUserCnt(userId);
+	}
+
+	if (ipCount && +ipCount >= IP_RATE_LIMIT_TIMES) {
+		res.status(429).json({ ip: ipCount, id: userCount });
 		return;
 	}
 
 	// Check user rate limit
 	if (userId) {
-		var userCount = await redisClient.get(userKey);
-		if (userCount && parseInt(userCount) > USER_RATE_LIMIT_TIMES) {
+		if (userCount && parseInt(userCount) >= USER_RATE_LIMIT_TIMES) {
 			res.status(429).json({
-				ip: ipAddress,
-				id: userId,
+				ip: ipCount,
+				id: userCount,
 			});
 			return;
 		}
 	}
 
 	// Update IP and user rate limit counters
-
-	await redisClient.set(ipKey, ipCount ? +ipCount + 1 : 1);
-	await redisClient.expire(ipKey, RATE_LIMIT_PRECISION_SEC);
-
+	await incIpCnt(ipAddress, ipCount, RATE_LIMIT_PRECISION_SEC);
 	if (userId) {
-		await redisClient.set(userKey, userCount ? +userCount + 1 : 1);
-		await redisClient.expire(userKey, RATE_LIMIT_PRECISION_SEC);
+		await incUserCnt(userId, userCount, RATE_LIMIT_PRECISION_SEC);
 	}
 
 	next();

@@ -1,4 +1,5 @@
 import { subscribeBitstamp, unsubscribeBitstamp } from "./bitstamp.js";
+import { addNewPrice, getPrices } from "../service/redis.js";
 
 let userByCurrencyPair = new Map();
 let currencyPairByUser = new Map();
@@ -29,12 +30,40 @@ const subscribe = (ws, socket, currencyPairs) => {
 	addCurrencyPairByUser(socket, currencyPairs);
 };
 
-export const broadcast = (event) => {
+export const broadcast = async (event) => {
 	const data = JSON.parse(event.data);
-	const cahnnel = data.channel.split("_")[2];
-	userByCurrencyPair.get(cahnnel)?.forEach((socket) => {
-		socket.emit(cahnnel, JSON.stringify(data.data));
-	});
+	const channel = data.channel.split("_")[2];
+
+	if (data.event.includes("succeeded")) {
+		userByCurrencyPair.get(channel)?.forEach((socket) => {
+			socket.emit(
+				channel,
+				JSON.stringify(`subscribe ${channel} succeeded`)
+			);
+		});
+	} else {
+		const latestPrice = data.data.price;
+
+		await addNewPrice(channel, latestPrice, process.env.OHCL_PRECISION_SEC);
+
+		const prices = await getPrices(channel);
+
+		const firstPrice = prices[0];
+		const highestPrice = Math.max(...prices);
+		const lowestPrice = Math.min(...prices);
+
+		userByCurrencyPair.get(channel)?.forEach((socket) => {
+			socket.emit(
+				channel,
+				JSON.stringify({
+					firstPrice,
+					highestPrice,
+					lowestPrice,
+					latestPrice,
+				})
+			);
+		});
+	}
 };
 
 const unsubscribe = (ws, socket, currencyPairs) => {
