@@ -12,18 +12,18 @@ const USER_RATE_LIMIT_TIMES = process.env.USER_RATE_LIMIT_TIMES;
 const IP_RATE_LIMIT_TIMES = process.env.IP_RATE_LIMIT_TIMES;
 const RATE_LIMIT_PRECISION_SEC = process.env.RATE_LIMIT_PRECISION_SEC;
 
-// Rate limit middleware
 export const rateLimiterMiddleware = async (req, res, next) => {
 	const ipAddress = req.ip;
 	const userId = req.query.user;
 
-	// Check IP rate limit
+	// get counter from redis
 	const ipCount = (await getIpCnt(ipAddress)) ?? 0;
 	let userCount = null;
 	if (userId) {
 		userCount = (await getUserCnt(userId)) ?? 0;
 	}
 
+	// Check IP rate limit
 	if (ipCount && +ipCount >= IP_RATE_LIMIT_TIMES) {
 		res.status(429).json({ ip: ipCount, id: userCount });
 		return;

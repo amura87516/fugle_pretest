@@ -1,13 +1,14 @@
 import request from "supertest";
 import nock from "nock";
 
-import app from "../main/app.js";
-import { HACKER_NEWS_API, MOCK_HACKER_NEWS, TEST_USER_ID } from "./mockData.js";
-import { resetRedis } from "../main/service/redis.js";
+import app from "../../main/app.js";
+import { MOCK_HACKER_NEWS, TEST_USER_ID } from "../mock/mockData.js";
+import { HACKER_NEWS_API } from "../mock/mockServerAndApi.js";
+import { resetRedisForTesting } from "../../main/service/redis.js";
 
 describe("Fetch data from hacker news", () => {
 	beforeEach(async () => {
-		await resetRedis();
+		await resetRedisForTesting();
 	});
 
 	afterEach(() => {

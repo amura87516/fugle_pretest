@@ -2,7 +2,7 @@ import express from "express";
 import { dataRouter } from "./controller/data.js";
 
 /*
-    Build server
+    Build restful server
 */
 
 var app = express();

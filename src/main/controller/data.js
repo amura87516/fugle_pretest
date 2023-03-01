@@ -11,7 +11,8 @@ var router = express.Router();
 
 router.get("/", rateLimiterMiddleware, function (req, res) {
 	const { user: userId } = req.query;
-	// check heroId is numeric and positive
+
+	// check heroId is valid
 	if (isNaN(+userId) || +userId <= 0 || +userId > 1000) {
 		res.status(400).send("invalid user id");
 		return;

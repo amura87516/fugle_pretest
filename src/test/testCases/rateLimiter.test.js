@@ -1,13 +1,18 @@
 import request from "supertest";
 import nock from "nock";
 
-import app from "../main/app.js";
-import { HACKER_NEWS_API, TEST_USER_ID, MOCK_HACKER_NEWS } from "./mockData.js";
-import { resetRedis, setUserCnt, setIpCnt } from "../main/service/redis.js";
+import app from "../../main/app.js";
+import { TEST_USER_ID, MOCK_HACKER_NEWS, TEST_IP } from "../mock/mockData.js";
+import { HACKER_NEWS_API } from "../mock/mockServerAndApi.js";
+import {
+	resetRedisForTesting,
+	setUserCnt,
+	setIpCnt,
+} from "../../main/service/redis.js";
 
-describe("Fetch data from hacker news", () => {
+describe("Rate limiter with middleware and redis", () => {
 	beforeEach(async () => {
-		await resetRedis();
+		await resetRedisForTesting();
 	});
 
 	afterEach(() => {
@@ -34,7 +39,7 @@ describe("Fetch data from hacker news", () => {
 	test("Excessed ip rate limit", (done) => {
 		HACKER_NEWS_API.reply(200, MOCK_HACKER_NEWS);
 
-		setIpCnt("::ffff:127.0.0.1", process.env.IP_RATE_LIMIT_TIMES);
+		setIpCnt(TEST_IP, process.env.IP_RATE_LIMIT_TIMES);
 
 		request(app)
 			.get(`/data?user=${TEST_USER_ID}`)

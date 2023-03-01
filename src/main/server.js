@@ -13,9 +13,11 @@ import { buildClientSocket } from "./socket/client.js";
 
 dotenv.config();
 
+// build restful server
 var server = http.createServer(app);
 server.listen(process.env.SERVER_PORT);
 
+// build socket server
 server = new Server(server);
 const ws = buildBitstampSocket(process.env.BITSTAMP_URL);
 server = buildClientSocket(server, ws);

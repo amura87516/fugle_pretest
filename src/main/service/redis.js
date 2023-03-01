@@ -16,6 +16,8 @@ redisClient.on("error", (err) => {
 	console.error("Error connecting to Redis server:", err);
 });
 
+// get counter in redis
+
 export const getUserCnt = (userId) => {
 	const minutes = new Date().getMinutes();
 	const userKey = `user_${userId}_${minutes}`;
@@ -27,6 +29,8 @@ export const getIpCnt = (ip) => {
 	const ipKey = `ip_${ip}_${minutes}`;
 	return redisClient.get(ipKey);
 };
+
+// increase counter in redis
 
 export const incUserCnt = async (
 	userId,
@@ -46,25 +50,29 @@ export const incIpCnt = async (ip, ipCount, RATE_LIMIT_PRECISION_SEC) => {
 	await redisClient.expire(ipKey, RATE_LIMIT_PRECISION_SEC);
 };
 
-export const addNewPrice = async (
+// get and set currency history in redis
+
+export const addNewPriceToRedis = async (
 	channel,
 	price,
 	timestamp,
-	OHCL_PRECISION_SEC
+	OHLC_PRECISION_SEC
 ) => {
 	const minutes = Math.floor((timestamp / 60) % 60);
 	const key = `price_${channel}_${minutes}`;
 	await redisClient.rpush(key, price);
-	await redisClient.expire(key, OHCL_PRECISION_SEC);
+	await redisClient.expire(key, OHLC_PRECISION_SEC);
 };
 
-export const getPrices = async (channel, timestamp) => {
+export const getPricesHistoryFromRedis = async (channel, timestamp) => {
 	const minutes = Math.floor((timestamp / 60) % 60);
 	const key = `price_${channel}_${minutes}`;
 	return (await redisClient.lrange(key, 0, -1)).map((price) => +price);
 };
 
-export const resetRedis = async () => {
+// functions for testing environment setup
+
+export const resetRedisForTesting = async () => {
 	await redisClient.flushall();
 };
 
