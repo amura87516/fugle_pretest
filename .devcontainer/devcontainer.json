@@ -34,5 +34,7 @@
 			]
 		}
 	},
+	"forwardPorts": [6379],
+	"remote.localPortHost": "allInterfaces",
 	"remoteUser": "root"
 }

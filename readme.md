@@ -159,6 +159,13 @@
         -   single currency pair data
         -   multile currency pair data
 
+# Redis
+
+-   To maniulate redis in the system, you can use redis browser in the left side bar and set host=cache & port=6379, then you can do redis operation in the redis cli.
+-   (It should be set automatically already) If you want to use your local redis browser, you can press "Add Port" in the bottom pannel and add "6379". It will map redis port to localhost then you can browse the system redis in your local browser.
+    <img src="./image/redisExtention.png"/>
+    <img src="./image/redisCli.png"/>
+
 # Postman Example
 
 <img src="./image/hackerNews.png"/>
