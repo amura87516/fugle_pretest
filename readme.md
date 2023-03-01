@@ -158,3 +158,9 @@
         -   disconnection (unsunscribe all)
         -   single currency pair data
         -   multile currency pair data
+
+# Postman Example
+
+<img src="./image/hackerNews.png"/>
+<img src="./image/rateLimiter.png"/>
+<img src="./image/socket.png"/>
